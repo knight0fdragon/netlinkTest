@@ -1,0 +1,197 @@
+XOS72996.TXT - Release notes for 7/29/96 XBAND software
+=======================================================
+
+This release consists of files that Saturn developers might find useful in
+developing head-to-head Saturn games for modem play. The software is roughly
+equivalent to the initial Japanese release of the XBAND software with some
+minor differences :
+
+- The software is aimed at game developers, not end users. Therefore it will
+lack some functionality that end users expect. These limitations should not
+have any effect on developers, however.
+
+- The software has been built to run on US modem hardware, rather than
+Japenese modem hardware (this is different than the 7/3/96 release of the
+software). Specifically, we do not perform the modem ID check that occurs in
+the Japanese software. This means that booting the software without a modem
+installed will result in incorrect operation should the user attempt to dial.
+Also, we store a bit of configuration information in the Saturn internal
+backup RAM, rather than on the modem FLASH memory.
+
+- The software has been buiit for peer-to-peer play only, without calling the
+XBAND servers. This expedites the development of game software.
+
+- The software has been build with English text, rather than Japanese, for
+easier reading by those of us who can't read Japanese (like me!).
+
+- The software does not require the user to enter their own phone number (in
+Japan, users have to do this as there is no way for the XBAND servers to
+automatically determine this. In the U.S., such a capability exists, so users
+don't need to perform this step manually).
+
+- The software requires the use of a SegaSaturn "red disc", or the use of a
+Smallbox (VCD) development kit, to run the XBAND UI software. Developers can
+also use a CartDev or similar device if they wish to use the Head To Head
+Game Library alone. Details are contained within the XBLIB.DOC documentation
+file.
+
+Included in this release are the following files :
+==================================================
+
+To be built onto the CD :
+DRAMDB.BIN        (XBAND data file)
+FLD_KNL.BIN       (Sega library used to transition from XBAND into the game)
+GAMEINFO.BIN      (Game-specific information file, documented in XBLIB.DOC)
+SAMPLEIP.BIN      (Game-specific IP file ... tells where game binary is loaded)
+XBAND.DAT         (Yet another XBAND data file)
+XBLIBUS.bin       (XBAND Head-To-Head Game Library file)
+XBMAP.BIN         (Disc-specific file that tells XBAND where to find the game)
+ip.bin            (XBAND's Initial Program)
+loader.bin        (XBAND loader file ... decides if game or XBAND is launched)
+xband.bin         (XBAND executable itself)
+smp.bin           (Sega's sample game "battle-cubes")
+
+To build the CD :
+xband.scr         (script file to build sample disc)
+
+Program headers :
+XBANDLib.h        (header file for XBAND Head-To-Head game library)
+
+Documentation :
+XOS72996.TXT      (this file)
+XBLIB.DOC         (Head-To-Head Game Library documentation, MSWord 5 format)
+
+How to build a CD with the sample game ("battle-cubes")
+=======================================================
+
+Place all the files (except the documentation, which isn't needed for building
+the CD) into a directory on the PC that has the Sega Saturn CDROM tools
+(VCDBUILD, VCDMKTOC, VCDEMU, SEGACDW).
+
+In DOS, with that directory as the current directory, type :
+
+VCDBUILD XBAND
+
+(The PC should print a bunch of status). Next, type :
+
+VCDMKTOC XBAND
+
+(More status from the PC. I'd love to know why this step is separate :>  )
+
+Now the CD disc is ready. Either use "VCDEMU XBAND" to run the CD emulator with
+a smallbox, or insert a blank CD-R disc into the CD-R drive and type :
+
+SEGACDW XBAND
+
+(I personally use an option like "-s 1" or "-s 2" to burn the CD at a lower
+speed, as some blank CD-Rs don't seem to like the default 4x recording speed.
+Your mileage may vary.)
+
+How to use the Peer-To-Peer development XBAND software
+======================================================
+This version of the XBAND software is meant for play without the need to call
+the XBAND server. Also, it is only meant for development purposes, not for
+end-users. Therefore, special knowledge is needed to make it work properly.
+
+First, get two modem setups running. On one modem (which will be known as the
+"slave" modem, the modem that answers the telephone), choose one of the
+characters and set the Code Name to be something starting with the letters "SP"
+(for example, "Spleen". Don't worry, UNIX-heads, it's not case-sensitive).
+
+OK, how does one change a Code Name? Well, when the software first powers up,
+you will see a splash screen. Pressing a button will get you to a screen where
+you will see four player icons, with four Code Names below them. This is where
+the user can choose which player they wish to use. If the Saturn does not have
+any XBAND configuration stored in backup RAM, the code names will all be "New
+Player". In this case, selecting one will move the user to the "Enter Your Code
+Name" screen. If a code name already exists, then selecting a character will
+put you into the "main" screen, which has the Challenge button, the Player List
+button, etc.   Choose the "Options" button (which has a Key icon). Inside of
+Options, there is a button called "Player ID". Choose that. Inside of "Player
+ID", choose "Code Name".
+
+Now you're in a screen ("Enter Your Code Name") that has some helpful text near
+the top, a text entry field in the middle, and an on-screen keyboard on the
+bottom. Use the D-pad to navigate the green cursor over the on-screen keyboard,
+use the A button to type a Space character, the B button to backspace, and the
+C button to choose whatever letter the cursor has beneath it. The Y and Z
+buttons are shift buttons (not necesary for this), and the X button actually
+cycles between keyboards (Roman and a pair of Japanese keyboards), so don't be
+alarmed if you accidentally make the keyboard a bunch of Japanese glyphs. Once
+done editing your code name, head for the "OK" button in the lower-right.
+You'll also notice some Japanese buttons in the right column. The second from
+the bottom is "Cancel", if you need to use that instead.
+
+If you're lucky enough to have a real (hardware) keyboard, you should be able
+to use that instead of the Saturn controller to expedite entering text.
+
+The Peer-To-Peer software looks at the Code Name and sees the "SP" which
+tells it to go into Slave mode (that's the S part) and also to use
+PeerDataExchange before the game (this is the P part. The PeerDataExchange is
+a data exchange between the XBAND software that occurs after the peers
+connect, but before the game itself is launched). For the slave modem, the
+rest of the Code Name is ignored.
+
+Next, on the second modem, choose a character and set that character's Code
+Name to the name "MP5551212" (replacing 5551212 with whatever phone number
+you wish to dial to reach the slave modem from the master modem. This number
+will depend upon your configuration - certain phone-line simulators just want
+to hear one or more digits, others require a specific sequence. Or if you use
+standard phone lines, you'll just want the phone number for the slave modem).
+The "M" stands for "master" (dialing) modem, and the "P" continues to mean
+"PeerDataExchange".
+
+Back on the slave modem, navigate to the "Challenge" button. Select it, and
+a dialog will ask if you wish to register with XBAND. Choose Yes. You'll
+see a screen come up, then disappear, and you'll return to the main
+("Challenge" / "Player List" / etc.) screen. You'll also notice some text
+scrolling that says "Waiting for Call". You've told the slave modem to
+auto-answer for the next two minutes.
+
+Now go back to the master modem. Select the Challenge button, and reply "Yes"
+to the dialog box that asks if you'd like to register. Now you'll see a
+screen appear, then disappear, then a screen will appear, saying "Dialing
+Peer xxx". The master will dial the slave, they should negotiate and exchange
+information, then a screen should appear showing the two opponents
+side-by-side. This is known as the "Versus screen". After awhile, or when
+someone gets impatient and starts pressing a button, the software will then
+launch the game (you should see the Sega logo screen, followed by the game).
+Play the game (really, it's fun to have two cubes shooting at each other)
+and when someone wins, have one of the users decline to play again. The
+modems should disconnect, and the XBAND user interface should reappear. Most
+likely, the XBAND software will ask you if you wish to add the opponent to
+the Player List. Reply "No" and the software should then return to the main
+screen. At this point, you've successfully run the game once. To repeat,
+you won't need to re-enter code names or anything. Just remember to "Challenge"
+with the slave (answering) modem first, then the master (dialing) modem.
+
+OK, where is the configuration information (Code Names, etc.) stored?
+=====================================================================
+Right now, a small amount of configuration information (phone configuration,
+Code Names, and the like) are stored in a small file in the Saturn Backup RAM.
+The title is "XBAND" and the comment is "MY_COMMENT". If you wish to reset
+your configuration, use the Saturn boot ROM's Memory control panel, as with
+other Backup RAM data.
+
+It is quite likely that the contents of the backup RAM file will change with
+subsequent releases of this software. As the file contains version information,
+it will most likely automatically be discarded.
+
+Alright, where do I go from here?
+=================================
+The file XBLIB.DOC has documentation on how to use the XBAND Head To Head Game
+Library. The main body of this documentation is how to use the Head To Head
+Game Library. An appendix contains information on packaging and building
+CD-ROMs. There's also information on issues with game synchronization using
+the Head To Head library.
+
+The file XBANDLib.h contains the actual program interface to the Head To Head
+Game Library. Use this header from within the portion of your game that needs
+to interface with the game library.
+
+Contact information
+===================
+Sega DTS can be reached in the followng ways :
+
+phone = (415)-802-1719
+email = DTS@sega.com
